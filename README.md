@@ -42,27 +42,29 @@ ConsentOS gives you a single `<script>` tag to embed on your site and a self-hos
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Client Browser                                     │
-│  ┌─────────────┐  ┌──────────┐  ┌───────────────┐   │
-│  │ Consent     │  │ Script   │  │ Banner UI     │   │
-│  │ Loader (2KB)│→ │ Blocker  │  │ (Shadow DOM)  │   │
-│  └──────┬──────┘  └──────────┘  └───────────────┘   │
-│         │  TCF v2.3  ·  GCM v2  ·  GPP v1  ·  GPC   │
-└─────────┼───────────────────────────────────────────┘
-          │
-          ▼
-┌─────────────────────┐   ┌──────────────────────┐
-│  FastAPI Backend    │   │  Scanner Service     │
-│  · Config API       │   │  · Playwright crawler│
-│  · Consent API      │   │  · Auto-categoriser  │
-│  · Compliance API   │   │  · Celery worker     │
-└─────────┬───────────┘   └──────────────────────┘
-          │
-    ┌─────┴──────┐
-    │ PostgreSQL │    Redis (cache + queue)
-    └────────────┘
+```mermaid
+graph TD
+    subgraph ClientBrowser["Client Browser"]
+        Loader["Consent Loader (2KB)"]
+        Blocker["Script Blocker"]
+        UI["Banner UI (Shadow DOM)"]
+        
+        Loader --> Blocker
+        style UI fill:#fff,stroke:#333,stroke-width:1px
+    end
+
+    Backend["FastAPI Backend<br>• Config API<br>• Consent API<br>• Compliance API"]
+    Scanner["Scanner Service<br>• Playwright crawler<br>• Auto-categoriser<br>• Celery worker"]
+    DB[("PostgreSQL")]
+    Cache[("Redis (cache + queue)")]
+
+    Loader -->|TCF v2.3 · GCM v2 · GPP v1 · GPC| Backend
+    Backend --> DB
+    
+    %% Formatting rules to mimic the original ASCII look
+    classDef default fill:#fff,stroke:#333,stroke-width:1px;
+    classDef subgraphClass fill:#fff,stroke:#333,stroke-width:1px,stroke-dasharray: 0;
+    style ClientBrowser fill:#fff,stroke:#333,stroke-width:1px;
 ```
 
 ## Quick start
