@@ -60,11 +60,6 @@ graph TD
 
     Loader -->|TCF v2.3 · GCM v2 · GPP v1 · GPC| Backend
     Backend --> DB
-    
-    %% Formatting rules to mimic the original ASCII look
-    classDef default fill:#fff,stroke:#333,stroke-width:1px;
-    classDef subgraphClass fill:#fff,stroke:#333,stroke-width:1px,stroke-dasharray: 0;
-    style ClientBrowser fill:#fff,stroke:#333,stroke-width:1px;
 ```
 
 ## Quick start
